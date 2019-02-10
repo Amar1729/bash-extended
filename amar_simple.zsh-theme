@@ -72,6 +72,13 @@ prompt_git() {
   fi
 }
 
+prompt_ssh() {
+  if [[ -n $SSH_CONNECTION ]]; then
+    rprompt_segment blue
+    echo -n "$(hostname)"
+  fi
+}
+
 # Status:
 # was there an error?
 prompt_status() {
@@ -85,6 +92,7 @@ prompt_status() {
 build_rprompt() {
   RETVAL=$?
   prompt_git
+  prompt_ssh
   prompt_status
 }
 
