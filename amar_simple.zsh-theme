@@ -9,8 +9,8 @@ CURRENT_BG='NONE'
 
 # Begin a segment for right prompt
 # Similar to prompt_segment, but:
-#		- segment sepearators have to show on left instead
-#		- rprompt starts drawing when $CURRENT_BG='NONE'
+#       - segment sepearators have to show on left instead
+#       - rprompt starts drawing when $CURRENT_BG='NONE'
 # TODO: this function isn't completley right: inner arrows might not get set to correct colors
 rprompt_segment() {
   local fg
@@ -19,7 +19,7 @@ rprompt_segment() {
     # don't print sepearator for first segment
     # TODO doesn't work ???
     echo -n " %{%f%b%k%}%{$fg%} "
-	CURRENT_BG="SET"
+    CURRENT_BG="SET"
   else
     echo -n " %{%f%}$SEGMENT_RSEP%{$fg%} "
   fi
@@ -101,7 +101,7 @@ prompt_git() {
     setopt promptsubst
     autoload -Uz vcs_info
 
-		# ◒ 
+    # ◒ 
     zstyle ':vcs_info:*' enable git
     zstyle ':vcs_info:*' get-revision true
     zstyle ':vcs_info:*' check-for-changes true
@@ -128,9 +128,9 @@ prompt_ssh() {
 prompt_status() {
   local symbols
   symbols=()
-	[[ $RETVAL -ne 0 ]] && symbols+="%{%B%F{red}%}$RETVAL%{%b%}"
+    [[ $RETVAL -ne 0 ]] && symbols+="%{%B%F{red}%}$RETVAL%{%b%}"
 
-	[[ -n "$symbols" ]] && rprompt_segment default "$symbols"
+    [[ -n "$symbols" ]] && rprompt_segment default "$symbols"
 }
 
 build_rprompt() {
@@ -141,5 +141,6 @@ build_rprompt() {
 }
 
 
+# todo : truncate lprompt to first 25 chars
 PROMPT='%{$fg_bold[green]%}%2~ %{$reset_color%}%(!.#.$) '
 RPROMPT='%{%f%b%k%}$(build_rprompt) '
