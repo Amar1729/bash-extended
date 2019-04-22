@@ -26,6 +26,50 @@ rprompt_segment() {
   [[ -n $2 ]] && echo -n $2
 }
 
+# modified from: oh-my-zsh/lib/git.zsh
+# simple compare git version
+function _git_compare_version() {
+  local INPUT_GIT_VERSION INSTALLED_GIT_VERSION
+  INPUT_GIT_VERSION=(${(s/./)1})
+  INSTALLED_GIT_VERSION=($(command git --version 2>/dev/null))
+  INSTALLED_GIT_VERSION=(${(s/./)INSTALLED_GIT_VERSION[3]})
+
+  for i in {1..3}; do
+    if [[ $INSTALLED_GIT_VERSION[$i] -gt $INPUT_GIT_VERSION[$i] ]]; then
+      echo 1
+      return 0
+    fi
+    if [[ $INSTALLED_GIT_VERSION[$i] -lt $INPUT_GIT_VERSION[$i] ]]; then
+      echo -1
+      return 0
+    fi
+  done
+  echo 0
+}
+
+# Checks if working tree is dirty
+function _parse_git_dirty() {
+  local STATUS=''
+  local FLAGS
+  FLAGS=('--porcelain')
+  if [[ "$(_git_compare_version '1.7.2')" -gt 0 ]]; then
+    FLAGS+='--ignore-submodules=dirty'
+  fi
+  # this should be true if something takes way too long
+  # todo : maybe export this under chpwd() (in zshrc or here?) automatically based on size of .git/
+  if [[ "$DISABLE_UNTRACKED_FILES_DIRTY" == "true" ]]; then
+    FLAGS+='--untracked-files=no'
+  fi
+  STATUS=$(command git status ${FLAGS} 2> /dev/null | tail -n1)
+  if [[ -n $STATUS ]]; then
+    #echo "$ZSH_THEME_GIT_PROMPT_DIRTY"
+    echo '*'
+  else
+    #echo "$ZSH_THEME_GIT_PROMPT_CLEAN"
+    echo ''
+  fi
+}
+
 # Git: branch/detached head, dirty status
 prompt_git() {
   (( $+commands[git] )) || return
@@ -38,7 +82,7 @@ prompt_git() {
   repo_path=$(git rev-parse --git-dir 2>/dev/null)
 
   if $(git rev-parse --is-inside-work-tree >/dev/null 2>&1); then
-    dirty=$(parse_git_dirty)
+    dirty=$(_parse_git_dirty)
     ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
     if [[ -n $dirty ]]; then
       rprompt_segment yellow
