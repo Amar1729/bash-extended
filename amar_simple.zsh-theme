@@ -1,6 +1,10 @@
 # Simple zsh theme, with git and error status
 # Based off of agnoster's theme, but without the colored backgrounds
 
+# load colors and expand prompt if not set
+autoload -U colors && colors
+setopt prompt_subst
+
 CURRENT_BG='NONE'
 
 () {
