@@ -7,8 +7,6 @@ setopt prompt_subst
 
 ZSH_THEME_GIT_PROMPT_PREFIX="git:("         # Prefix at the very beginning of the prompt, before the branch name
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"             # At the very end of the prompt
-ZSH_THEME_GIT_PROMPT_DIRTY="*"              # Text to display if the branch is dirty
-ZSH_THEME_GIT_PROMPT_CLEAN=""               # Text to display if the branch is clean
 
 CURRENT_BG='NONE'
 
@@ -71,11 +69,9 @@ function _parse_git_dirty() {
   fi
   STATUS=$(command git status ${FLAGS} 2> /dev/null | tail -n1)
   if [[ -n $STATUS ]]; then
-    #echo "$ZSH_THEME_GIT_PROMPT_DIRTY"
-    echo '*'
+    echo "*"
   else
-    #echo "$ZSH_THEME_GIT_PROMPT_CLEAN"
-    echo ''
+    echo ""
   fi
 }
 
